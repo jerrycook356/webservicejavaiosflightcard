@@ -1,8 +1,10 @@
 package dto;
-
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class FlightCard {
-	//public int id;
+	public int Id;
 	public String dateOut;
 	public String dateIn;
 	public String destination;
@@ -41,7 +43,7 @@ public class FlightCard {
 	
 	public FlightCard(){}
 	
-	public FlightCard(//int id,
+	public FlightCard(int Id,
 			String dateOut, String dateIn, String destination, String hobbsIn, String hobbsOut,
 			String totalHobbs, String cashSpent, String flightType, String leaseName, String pilot,
 			String planeType,String passenger1, String passenger2, String passenger3, String passenger4,
@@ -52,7 +54,7 @@ public class FlightCard {
 		
 		super();
 		
-		//this.id = id;
+		this.Id = Id;
 		this.dateOut = dateOut;
 		this.dateIn = dateIn;
 		this.destination = destination;
@@ -88,13 +90,14 @@ public class FlightCard {
 		this.passenger22 = passenger22;
 		this.passenger23 = passenger23;
 		this.passenger24 = passenger24;
+		
 	}
-	//public int getId() {
-	//	return id;
-	//}
-	//public void setId(int id) {
-	//	this.id = id;
-//	}
+	public int getId(){
+		return Id;
+	}
+	public void setId(int Id){
+		this.Id = Id;
+	}
 	public String getDateOut() {
 		return dateOut;
 	}

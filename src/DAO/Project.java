@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-
+import java.sql.Date;
 import dto.FlightCard;
 
 public class Project {
@@ -13,13 +14,14 @@ public class Project {
 	public ArrayList<FlightCard> getFlightcards(Connection con) {
 		ArrayList<FlightCard> cards = new ArrayList<FlightCard>();
 		FlightCard card;
-		try {
+		try {			
+			
 			String sql = "SELECT * FROM flightcardtable";
+			
 			PreparedStatement ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				card = new FlightCard();
-				//card.setId( rs.getInt("id"));
 				card.setDateOut(rs.getString("dateOut"));
 				card.setDateIn( rs.getString("dateIn"));
 				card.setDestination( rs.getString("destination"));
@@ -55,6 +57,7 @@ public class Project {
 				card.setPassenger22(rs.getString("passenger22"));
 				card.setPassenger23(rs.getString("passenger23"));
 				card.setPassenger24(rs.getString("passenger24"));
+				card.setId(rs.getInt("Id"));
 				cards.add(card);
 				
 			}
@@ -67,6 +70,7 @@ public class Project {
 				e.printStackTrace();
 			}
 		}
+		
 		return cards;
 
 	}

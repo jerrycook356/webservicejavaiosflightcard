@@ -1,6 +1,8 @@
 package WebService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,7 +20,12 @@ import com.google.gson.GsonBuilder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.Format;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.sql.Connection;
+import java.sql.Date;
 
 import DAO.DatabaseHelper;
 import dto.FlightCard;
@@ -52,18 +59,24 @@ public class WebService {
 	@POST
 	@Path("/addToFlightCard")
 	@Consumes("application/json")
-	public String add(String card) {
+	public String add(String card) { 
+
 		Gson gson = new GsonBuilder().create();
 		FlightCard newcard = gson.fromJson(card, FlightCard.class);
-
+		
+	    String dateOut = newcard.getDateOut();
+	    String formatedString = dateOut.substring(0,19);
+	    
+	    
+	    
 		String sql = "INSERT INTO flightcardtable (dateOut,dateIn,destination,hobbsIn,hobbsOut,hobbsTotal,"
 				+ "cashSpent,flightType,leasename,pilotName,planeType,passenger1,passenger2,passenger3,passenger4,passenger5,passenger6,"
 				+ "passenger7,passenger8,passenger9,passenger10,passenger11,passenger12,passenger13,passenger14,"
 				+ "passenger15,passenger16,passenger17,passenger18,passenger19,passenger20,passenger21,passenger22,passenger23,passenger24)"
 				+ " Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		try (Connection con = db.getConnection()) {
-			PreparedStatement ps = con.prepareStatement(sql);			
-			ps.setString(1, newcard.getDateOut());
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,formatedString);
 			ps.setString(2, newcard.getDateIn());
 			ps.setString(3, newcard.getDestination());
 			ps.setString(4, newcard.getHobbsIn());
@@ -101,7 +114,7 @@ public class WebService {
 
 			ps.executeUpdate();
 			ps.close();
-
+           System.out.println("inside save card dateOut = "+newcard.getDateOut());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -115,20 +128,25 @@ public class WebService {
 		Gson gson = new GsonBuilder().create();
 		
 		FlightCard card = gson.fromJson(string, FlightCard.class);
+		
+		String dateOut = card.getDateOut();
+		String formattedDate = dateOut.substring(0,19);
+		
 		String sql = "UPDATE flightcardtable "
 				+ "SET dateOut = ? ,dateIn = ?,destination = ?,hobbsIn = ?,hobbsOut = ?,hobbsTotal = ?,"
-				+ "cashSpent = ?,flightType = ?,leasename = ?,pilotName = ?,planeType = ?,passenger1 = ?,passenger2 = ?,passenger3 = ?,"
+				+ "cashSpent = ?,flightType = ?,leaseName = ?,pilotName = ?,planeType = ?,passenger1 = ?,passenger2 = ?,passenger3 = ?,"
 				+ "passenger4 = ?,passenger5 = ?,passenger6 = ?,"
 				+ "passenger7 = ?,passenger8 = ?,passenger9 = ?,passenger10 = ?,passenger11 = ?,passenger12 = ?,"
 				+ "passenger13 = ?,passenger14 = ?,"
 				+ "passenger15 = ?,passenger16 = ?,passenger17 = ?,passenger18 = ?,passenger19 = ?,"
 				+ "passenger20 = ?,passenger21 = ?,passenger22 = ?,passenger23 = ?,passenger24 = ?"
-				+ " WHERE  dateOut = ?" ;
+				+ " WHERE  dateOut = ?  AND leaseName = ?";
+				
 		try (Connection con = db.getConnection()) {
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, card.getDateOut());
+			ps.setString(1,formattedDate);
 			ps.setString(2, card.getDateIn());
-			ps.setString(3, card.getDestination());
+			ps.setString(3, card.getDestination());			
 			ps.setString(4, card.getHobbsIn());
 			ps.setString(5, card.getHobbsOut());
 			ps.setString(6, card.getHobbsTotal());
@@ -161,7 +179,9 @@ public class WebService {
 			ps.setString(33, card.getPassenger22());
 			ps.setString(34, card.getPassenger23());
 			ps.setString(35, card.getPassenger24());
-			ps.setString(36, card.getDateOut());
+			ps.setString(36,formattedDate);
+			ps.setString(37, card.getLeaseName());
+			
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -174,16 +194,43 @@ public class WebService {
 	@Path("/delete")
 	@Consumes("application/json")
 	public String delete(String string) {
+		
 		Gson gson = new GsonBuilder().create();
 		FlightCard card = gson.fromJson(string, FlightCard.class);
-		String sql = "DELETE FROM flightcardtable WHERE dateOut = ?";
+		     
+		String dateOut = card.getDateOut();
+		String formattedDateOut = dateOut.substring(0,19);
+		
+		String sql = "DELETE FROM flightcardtable WHERE dateOut = ?"
+				+ "AND dateIn = ?"
+				+"AND destination = ?"
+				+"AND hobbsIn = ?"
+				+"AND hobbsOut = ?"
+				+"AND hobbsTotal = ?"
+				+"AND cashSpent = ?"
+				+"AND flightType = ?"
+				+"AND leaseName = ?"
+				+"AND pilotName = ?"
+				+"AND planeType = ?"
+				+"AND passenger1 = ?";
 		try(Connection con = db.getConnection()) {
 			
 			PreparedStatement ps = con.prepareStatement(sql);
-			ps.setString(1, card.getDateOut());
+			ps.setString(1,formattedDateOut);
+			ps.setString(2, card.getDateIn());
+			ps.setString(3, card.getDestination());
+			ps.setString(4, card.getHobbsIn());
+			ps.setString(5, card.getHobbsOut());
+			ps.setString(6, card.getHobbsTotal());
+			ps.setString(7, card.getCashSpent());
+			ps.setString(8, card.getFlightType());
+			ps.setString(9, card.getLeaseName());
+			ps.setString(10, card.getPilotName());
+			ps.setString(11, card.getPlaneType());
+			ps.setString(12, card.getPassenger1());
 			ps.executeUpdate();
 			ps.close();
-		
+		  System.out.println("dateOut = "+card.getDateOut());
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -323,13 +370,11 @@ public class WebService {
 			while(rs.next()){
 				Plane plane = new Plane();
 				plane.setName(rs.getString("name"));
-				System.out.println("inside the while in get planes name = "+plane.name);
 				planes.add(plane);
 			}
 			ps.close();
 			Gson gson = new Gson();
 			planeString = gson.toJson(planes);
-			System.out.println("plane strin in get planes = "+planeString);
 			
 		}catch(SQLException e){
 			e.printStackTrace();
