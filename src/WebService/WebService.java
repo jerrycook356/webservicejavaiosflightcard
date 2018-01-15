@@ -48,6 +48,7 @@ public class WebService {
 			cards = pm.getFlightCards();
 			Gson gson = new Gson();
 			feeds = gson.toJson(cards);
+			System.out.println("feed string = "+feeds);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,7 +115,6 @@ public class WebService {
 
 			ps.executeUpdate();
 			ps.close();
-           System.out.println("inside save card dateOut = "+newcard.getDateOut());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

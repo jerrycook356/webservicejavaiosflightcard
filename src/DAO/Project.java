@@ -57,7 +57,6 @@ public class Project {
 				card.setPassenger22(rs.getString("passenger22"));
 				card.setPassenger23(rs.getString("passenger23"));
 				card.setPassenger24(rs.getString("passenger24"));
-				card.setId(rs.getInt("Id"));
 				cards.add(card);
 				
 			}

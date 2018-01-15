@@ -14,10 +14,10 @@ public class DatabaseHelper {
 	    
 	    //connection for local mysql
 	    
-		 /*final String dbUrl = "jdbc:mysql://localhost/flightdatabase";
+		/* final String dbUrl = "jdbc:mysql://localhost/flightdatabase";
 		   
 		  final String name = "root";
-		  final String pass = "jerry111";*/
+		  final String pass = "jerry111"; */
 		  
 		Connection con = null;
 		try{
