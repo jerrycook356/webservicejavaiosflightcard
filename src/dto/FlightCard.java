@@ -1,7 +1,4 @@
 package dto;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class FlightCard {
 	public String dateOut;
