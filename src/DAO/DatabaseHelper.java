@@ -7,7 +7,22 @@ import java.sql.SQLException;
 public class DatabaseHelper {
   
 	public Connection getConnection(){
+		//connection for amazon db on aws
+		//final String dbUrl = "jdbc:mysql://aaujb4l0dvq9sp.cmwbilivfjmx.us-east-2.rds.amazonaws.com/flightdatabase";
+        // final String name = "admin";
+	   // final String pass = "password";
+	    
+	    //connection for local mysql
+	    
+		/*final String dbUrl = "jdbc:mysql://localhost/flightdatabase";
+		   
+		  final String name = "root";
+		  final String pass = "jerry111"; */
 		
+		//connection for new aws db
+		final String dbUrl = "jdbc:mysql://aa13kbi76svxb3c.cwmcpyvel2fx.us-east-2.rds.amazonaws.com/flightdatabase";
+		final String name = "admin";
+		final String pass = "jerry111";
 		
 		  
 		Connection con = null;

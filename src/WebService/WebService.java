@@ -7,7 +7,8 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 
@@ -381,6 +382,70 @@ public class WebService {
 		}
 		return planeString;
 	}
+	
+	//get one transaction to use to get the hobbs in for that planetype.
+	@GET
+	@Path("/getSingleTransaction")
+	@Produces("application/json")
+	public String getSingleTransaction(@QueryParam("name") String name) {
+		String planeString = "";
+		try(Connection con = db.getConnection()){
+			String sql = "SELECT * FROM flightcardtable "
+					+ "Where planeType = ? ORDER BY dateIn DESC";
+			ArrayList<FlightCard>transactions = new ArrayList<FlightCard>();
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			FlightCard card;
+			while(rs.next()) {
+				card = new FlightCard();
+				card.setDateOut(rs.getString("dateOut"));
+				card.setDateIn( rs.getString("dateIn"));
+				card.setDestination( rs.getString("destination"));
+				card.setHobbsIn(rs.getString("hobbsIn"));
+				card.setHobbsOut( rs.getString("hobbsOut"));
+				card.setHobbsTotal(rs.getString("hobbsTotal"));
+				card.setCashSpent(rs.getString("cashSpent"));
+				card.setFlightType(rs.getString("flightType"));
+				card.setLeaseName(rs.getString("leaseName"));
+				card.setPilotName(rs.getString("pilotName"));
+				card.setPlaneType(rs.getString("planeType"));
+				card.setPassenger1(rs.getString("passenger1"));
+				card.setPassenger2(rs.getString("passenger2"));
+				card.setPassenger3(rs.getString("passenger3"));
+				card.setPassenger4(rs.getString("passenger4"));
+				card.setPassenger5(rs.getString("passenger5"));
+				card.setPassenger6(rs.getString("passenger6"));
+				card.setPassenger7(rs.getString("passenger7"));
+				card.setPassenger8(rs.getString("passenger8"));
+				card.setPassenger9(rs.getString("passenger9"));
+				card.setPassenger10(rs.getString("passenger10"));
+				card.setPassenger11(rs.getString("passenger11"));
+				card.setPassenger12(rs.getString("passenger12"));
+				card.setPassenger13(rs.getString("passenger13"));
+				card.setPassenger14(rs.getString("passenger14"));
+				card.setPassenger15(rs.getString("passenger15"));
+				card.setPassenger16(rs.getString("passenger16"));
+				card.setPassenger17(rs.getString("passenger17"));
+				card.setPassenger18(rs.getString("passenger18"));
+				card.setPassenger19(rs.getString("passenger19"));
+				card.setPassenger20(rs.getString("passenger20"));
+				card.setPassenger21(rs.getString("passenger21"));
+				card.setPassenger22(rs.getString("passenger22"));
+				card.setPassenger23(rs.getString("passenger23"));
+				card.setPassenger24(rs.getString("passenger24"));
+				transactions.add(card);
+			}
+			ps.close();
+			Gson gson = new Gson();
+			 planeString = gson.toJson(transactions.get(0));
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return planeString;
+	}
+	
+	
 	@POST
 	@Path("/addPlane")
     @Consumes("application/json")
@@ -414,5 +479,68 @@ public class WebService {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+	}
+	
+	@GET
+	@Path("/getByDate")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getByDate(@QueryParam("startDate")String startDate,
+			@QueryParam("endDate")String endDate) {
+		List<FlightCard> cards = new ArrayList<>();
+		FlightCard card;
+		String returnString;
+		String sql = "SELECT * FROM flightcardtable WHERE dateOut BETWEEN  ? AND  ?";
+		try(Connection con = db.getConnection()){
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setString(1,startDate);
+			ps.setString(2,endDate);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				card = new FlightCard();
+				card.setDateOut(rs.getString("dateOut"));
+				card.setDateIn( rs.getString("dateIn"));
+				card.setDestination( rs.getString("destination"));
+				card.setHobbsIn(rs.getString("hobbsIn"));
+				card.setHobbsOut( rs.getString("hobbsOut"));
+				card.setHobbsTotal(rs.getString("hobbsTotal"));
+				card.setCashSpent(rs.getString("cashSpent"));
+				card.setFlightType(rs.getString("flightType"));
+				card.setLeaseName(rs.getString("leaseName"));
+				card.setPilotName(rs.getString("pilotName"));
+				card.setPlaneType(rs.getString("planeType"));
+				card.setPassenger1(rs.getString("passenger1"));
+				card.setPassenger2(rs.getString("passenger2"));
+				card.setPassenger3(rs.getString("passenger3"));
+				card.setPassenger4(rs.getString("passenger4"));
+				card.setPassenger5(rs.getString("passenger5"));
+				card.setPassenger6(rs.getString("passenger6"));
+				card.setPassenger7(rs.getString("passenger7"));
+				card.setPassenger8(rs.getString("passenger8"));
+				card.setPassenger9(rs.getString("passenger9"));
+				card.setPassenger10(rs.getString("passenger10"));
+				card.setPassenger11(rs.getString("passenger11"));
+				card.setPassenger12(rs.getString("passenger12"));
+				card.setPassenger13(rs.getString("passenger13"));
+				card.setPassenger14(rs.getString("passenger14"));
+				card.setPassenger15(rs.getString("passenger15"));
+				card.setPassenger16(rs.getString("passenger16"));
+				card.setPassenger17(rs.getString("passenger17"));
+				card.setPassenger18(rs.getString("passenger18"));
+				card.setPassenger19(rs.getString("passenger19"));
+				card.setPassenger20(rs.getString("passenger20"));
+				card.setPassenger21(rs.getString("passenger21"));
+				card.setPassenger22(rs.getString("passenger22"));
+				card.setPassenger23(rs.getString("passenger23"));
+				card.setPassenger24(rs.getString("passenger24"));
+				cards.add(card);
+			}
+			rs.close();
+	
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		Gson gson = new Gson();
+		returnString = gson.toJson(cards);
+		return returnString;
 	}
 }
